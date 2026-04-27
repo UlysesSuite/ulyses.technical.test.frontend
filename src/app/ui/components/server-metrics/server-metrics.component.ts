@@ -24,7 +24,6 @@ import { Metric } from '../../../data/domain/metric/models/metric.model';
 })
 export class ServerMetricsComponent {
 
-  //TMC??
   private readonly metricsService = inject(MetricsService);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -42,8 +41,6 @@ export class ServerMetricsComponent {
   readonly avgRam = computed(() => this.average(this.serverMetrics(), 'ramUsage'));
   readonly recentMetrics = computed(() => this.serverMetrics().slice(0, 10));
 
-  //façade?
-  //.2 seh , deberia, prueba en template , borra coments
   constructor() {
     this.serverSelect$
       .pipe(
