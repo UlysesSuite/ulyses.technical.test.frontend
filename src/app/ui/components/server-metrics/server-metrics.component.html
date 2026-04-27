@@ -5,34 +5,45 @@
   </header>
 
   <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 space-y-8">
+
     <div class="max-w-xs">
-      <label class="block text-sm font-medium text-slate-600 mb-2">Target Server</label>
-      <select 
-        [(ngModel)]="selectedServerId" 
+      <label for="server-select" class="block text-sm font-medium text-slate-600 mb-2">
+        Target Server
+      </label>
+      <select
+        id="server-select"
+        [(ngModel)]="selectedServerId"
         (change)="onServerChange()"
         class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-slate-800 outline-none transition-all"
       >
         <option value="">Select a server...</option>
-        @for (server of servers; track server.id) {
+        @for (server of servers(); track server.id) {
           <option [value]="server.id">{{ server.hostname }} ({{ server.region }})</option>
         }
       </select>
     </div>
 
-    @if (loading) {
+    @if (loading()) {
       <div class="flex flex-col items-center justify-center py-20 space-y-4">
         <div class="w-12 h-12 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
         <p class="text-slate-400 font-medium animate-pulse">Fetching metrics from UlysesSuite API...</p>
       </div>
-    } @else if (serverMetrics.length > 0) {
+
+    } @else if (error()) {
+      <div class="py-12 text-center border-2 border-dashed border-rose-100 rounded-2xl space-y-2">
+        <p class="text-rose-500 font-semibold">{{ error() }}</p>
+      </div>
+
+    } @else if (recentMetrics().length > 0) {
+
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100">
           <h3 class="text-slate-500 text-sm font-semibold uppercase tracking-wider mb-4">Average CPU</h3>
-          <div class="text-3xl font-bold text-slate-800">74.2%</div>
+          <div class="text-3xl font-bold text-slate-800">{{ avgCpu() }}%</div>
         </div>
         <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100">
           <h3 class="text-slate-500 text-sm font-semibold uppercase tracking-wider mb-4">Average RAM</h3>
-          <div class="text-3xl font-bold text-slate-800">62.8%</div>
+          <div class="text-3xl font-bold text-slate-800">{{ avgRam() }}%</div>
         </div>
       </div>
 
@@ -47,27 +58,38 @@
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-slate-100">
-            @for (metric of serverMetrics.slice(0, 5); track metric.id) {
+            @for (metric of recentMetrics(); track metric.id) {
               <tr>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">{{ metric.timestamp | date:'short' }}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-slate-800">{{ metric.cpuUsage }}%</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-slate-800">{{ metric.ramUsage }}%</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                  {{ metric.timestamp | date:'short' }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-slate-800">
+                  {{ metric.cpuUsage }}%
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-slate-800">
+                  {{ metric.ramUsage }}%
+                </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="px-2 py-1 text-[10px] font-bold rounded-full uppercase" [ngClass]="{
-                    'bg-emerald-100 text-emerald-700': metric.status === 'Healthy',
-                    'bg-amber-100 text-amber-700': metric.status === 'Warning',
-                    'bg-rose-100 text-rose-700': metric.status === 'Critical'
-                  }">{{ metric.status }}</span>
+                  <span
+                    class="px-2 py-1 text-[10px] font-bold rounded-full uppercase"
+                    [ngClass]="{
+                      'bg-emerald-100 text-emerald-700': metric.status === 'Healthy',
+                      'bg-amber-100 text-amber-700': metric.status === 'Warning',
+                      'bg-rose-100 text-rose-700': metric.status === 'Critical'
+                    }"
+                  >{{ metric.status }}</span>
                 </td>
               </tr>
             }
           </tbody>
         </table>
       </div>
+
     } @else {
       <div class="py-20 text-center border-2 border-dashed border-slate-100 rounded-2xl">
         <p class="text-slate-400">No data to display. Please select a server above.</p>
       </div>
     }
+
   </div>
 </div>

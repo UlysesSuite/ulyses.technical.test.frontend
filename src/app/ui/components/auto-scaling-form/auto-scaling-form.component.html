@@ -1,0 +1,209 @@
+<div class="p-6 max-w-5xl mx-auto">
+  <header class="mb-8">
+    <h1 class="text-3xl font-bold text-slate-800">Create Auto-Scaling Policy</h1>
+    <p class="text-slate-500">Configure how your infrastructure scales based on load.</p>
+  </header>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <div class="lg:col-span-2">
+      <form
+        [formGroup]="policyForm"
+        (ngSubmit)="onSubmit()"
+        class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 space-y-6"
+      >
+
+        <div class="space-y-4">
+          <h2 class="text-lg font-semibold text-slate-700 flex items-center gap-2">
+            <span class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-slate-500 text-sm">1</span>
+            Base Configuration
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <div class="space-y-1">
+              <label for="policy-name" class="text-sm font-medium text-slate-600">Policy Name</label>
+              <input
+                id="policy-name"
+                type="text"
+                formControlName="policyName"
+                placeholder="e.g. Production Web Tier"
+                class="w-full px-4 py-2 rounded-xl border outline-none transition-all"
+                [class.border-slate-200]="!submitted || policyForm.controls.policyName.valid"
+                [class.border-rose-400]="submitted && policyForm.controls.policyName.invalid"
+              >
+              @if (submitted && policyForm.controls.policyName.hasError('required')) {
+                <p class="text-xs text-rose-500">Policy name is required.</p>
+              }
+            </div>
+
+            <div class="space-y-1">
+              <label for="instance-type" class="text-sm font-medium text-slate-600">Instance Type</label>
+              <select
+                id="instance-type"
+                formControlName="baseInstanceType"
+                class="w-full px-4 py-2 rounded-xl border border-slate-200 outline-none transition-all"
+              >
+                @for (type of instanceTypes; track type.id) {
+                  <option [value]="type.id">
+                    {{ type.label }} — ${{ (INSTANCE_PRICES[type.id]) }}/mo
+                  </option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-1">
+              <label for="base-nodes" class="text-sm font-medium text-slate-600">Base Nodes</label>
+              <input
+                id="base-nodes"
+                type="number"
+                formControlName="baseNodes"
+                min="1"
+                max="50"
+                class="w-full px-4 py-2 rounded-xl border border-slate-200 outline-none"
+              >
+            </div>
+            <div class="space-y-1">
+              <label for="max-nodes" class="text-sm font-medium text-slate-600">Max Nodes</label>
+              <input
+                id="max-nodes"
+                type="number"
+                formControlName="maxNodes"
+                min="1"
+                max="100"
+                class="w-full px-4 py-2 rounded-xl border border-slate-200 outline-none"
+              >
+            </div>
+          </div>
+        </div>
+
+        <hr class="border-slate-100">
+
+        <div class="space-y-4">
+          <div class="flex justify-between items-center">
+            <h2 class="text-lg font-semibold text-slate-700 flex items-center gap-2">
+              <span class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-slate-500 text-sm">2</span>
+              Dynamic Scaling Rules
+            </h2>
+            <button
+              type="button"
+              (click)="addRule()"
+              class="text-sm font-semibold text-slate-700 hover:text-slate-900 flex items-center gap-1 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-all"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+              </svg>
+              Add Rule
+            </button>
+          </div>
+
+          @if (rules.length === 0) {
+            <div class="p-8 border-2 border-dashed border-slate-100 rounded-2xl text-center">
+              <p class="text-slate-400 italic">No rules defined. Click "Add Rule" to get started.</p>
+            </div>
+          }
+
+          <div formArrayName="rules" class="space-y-3">
+            @for (rule of rules.controls; track $index) {
+              <div
+                [formGroupName]="$index"
+                class="grid grid-cols-[1fr_auto_1fr_1fr_auto] gap-3 items-end p-4 bg-slate-50 rounded-xl border border-slate-100"
+              >
+                <div class="space-y-1">
+                  <label class="text-xs font-medium text-slate-500">Metric</label>
+                  <select formControlName="metric" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 outline-none bg-white">
+                    @for (m of metrics; track m) {
+                      <option [value]="m">{{ m }}</option>
+                    }
+                  </select>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-xs font-medium text-slate-500">Op</label>
+                  <select formControlName="operator" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 outline-none bg-white font-mono">
+                    @for (op of operators; track op) {
+                      <option [value]="op">{{ op }}</option>
+                    }
+                  </select>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-xs font-medium text-slate-500">Threshold (%)</label>
+                  <input
+                    type="number"
+                    formControlName="threshold"
+                    min="1" max="100"
+                    class="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 outline-none"
+                  >
+                </div>
+
+                <div class="space-y-1">
+                  <label class="text-xs font-medium text-slate-500">+Nodes</label>
+                  <input
+                    type="number"
+                    formControlName="adjustment"
+                    min="1" max="20"
+                    class="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 outline-none"
+                  >
+                </div>
+
+                <button
+                  type="button"
+                  (click)="removeRule($index)"
+                  class="pb-2 text-slate-400 hover:text-rose-500 transition-colors"
+                  [attr.aria-label]="'Remove rule ' + ($index + 1)"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                  </svg>
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="pt-6">
+          <button
+            type="submit"
+            [disabled]="submitted && policyForm.invalid"
+            class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-slate-200"
+          >
+            Create Scaling Policy
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="lg:col-span-1 space-y-6">
+      <div class="bg-slate-900 rounded-2xl p-8 text-white shadow-xl sticky top-6">
+        <h3 class="text-slate-400 font-medium mb-1">Estimated Monthly Cost</h3>
+        <div class="text-4xl font-bold mb-6">${{ estimatedCost() }}</div>
+
+        <div class="space-y-4 text-sm text-slate-400">
+          <div class="flex justify-between">
+            <span>Instance Type</span>
+            <span class="text-white">{{ policyForm.controls.baseInstanceType.value }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Base Nodes</span>
+            <span class="text-white">{{ policyForm.controls.baseNodes.value }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Max Nodes</span>
+            <span class="text-white">{{ policyForm.controls.maxNodes.value }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Scaling Rules</span>
+            <span class="text-white">{{ rules.length }}</span>
+          </div>
+          <div class="pt-4 border-t border-slate-800 text-xs opacity-60">
+            * Máximo estimado incluyendo ajuste de reglas.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
