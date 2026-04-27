@@ -60,7 +60,9 @@ export class ServerHeatmapComponent {
   }
 
   //Def TMC - legibilidad
+  //quiza sea mejor alargarlo para ver que parte es la que tiene el cuello de botella
   private buildGrid(servers: Server[], metrics: Metric[]): GridData {
+    //es un acumulador , deberia de ser reduce
     const grouped = metrics.reduce<Record<string, Metric[]>>((acc, metric) => {
       (acc[metric.serverId] ??= []).push(metric);
       return acc;
@@ -68,6 +70,7 @@ export class ServerHeatmapComponent {
 
     return servers.reduce<GridData>((acc, server) => {
       acc[server.id] = (grouped[server.id] ?? []).sort(
+        //el parseo puede ser cuello de botella
         (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
       );
       return acc;

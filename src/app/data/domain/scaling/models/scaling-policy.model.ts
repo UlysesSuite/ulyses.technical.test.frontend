@@ -5,10 +5,12 @@ export interface ScalingRule {
   adjustment: number;
 }
 
+//missing maxNodes , comentar
 export interface ScalingPolicy {
   policyName: string;
   baseInstanceType: 't3.medium' | 'm5.large' | 'c6g.xlarge';
   baseNodes: number;
+  maxNodes: number;
   rules: ScalingRule[];
 }
 

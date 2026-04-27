@@ -6,7 +6,6 @@
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-    <!-- Form — col-span-2 -->
     <div class="lg:col-span-2">
       <form
         [formGroup]="policyForm"
@@ -14,7 +13,6 @@
         class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 space-y-6"
       >
 
-        <!-- Step 1: Base configuration -->
         <div class="space-y-4">
           <h2 class="text-lg font-semibold text-slate-700 flex items-center gap-2">
             <span class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-slate-500 text-sm">1</span>
@@ -23,7 +21,6 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-            <!-- Policy name -->
             <div class="space-y-1">
               <label for="policy-name" class="text-sm font-medium text-slate-600">Policy Name</label>
               <input
@@ -40,7 +37,6 @@
               }
             </div>
 
-            <!-- Instance type -->
             <div class="space-y-1">
               <label for="instance-type" class="text-sm font-medium text-slate-600">Instance Type</label>
               <select
@@ -57,23 +53,34 @@
             </div>
           </div>
 
-          <!-- Base nodes -->
-          <div class="max-w-xs space-y-1">
-            <label for="base-nodes" class="text-sm font-medium text-slate-600">Base Nodes</label>
-            <input
-              id="base-nodes"
-              type="number"
-              formControlName="baseNodes"
-              min="1"
-              max="50"
-              class="w-full px-4 py-2 rounded-xl border border-slate-200 outline-none"
-            >
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-1">
+              <label for="base-nodes" class="text-sm font-medium text-slate-600">Base Nodes</label>
+              <input
+                id="base-nodes"
+                type="number"
+                formControlName="baseNodes"
+                min="1"
+                max="50"
+                class="w-full px-4 py-2 rounded-xl border border-slate-200 outline-none"
+              >
+            </div>
+            <div class="space-y-1">
+              <label for="max-nodes" class="text-sm font-medium text-slate-600">Max Nodes</label>
+              <input
+                id="max-nodes"
+                type="number"
+                formControlName="maxNodes"
+                min="1"
+                max="100"
+                class="w-full px-4 py-2 rounded-xl border border-slate-200 outline-none"
+              >
+            </div>
           </div>
         </div>
 
         <hr class="border-slate-100">
 
-        <!-- Step 2: Dynamic scaling rules (FormArray) -->
         <div class="space-y-4">
           <div class="flex justify-between items-center">
             <h2 class="text-lg font-semibold text-slate-700 flex items-center gap-2">
@@ -92,7 +99,6 @@
             </button>
           </div>
 
-          <!-- Rules list -->
           @if (rules.length === 0) {
             <div class="p-8 border-2 border-dashed border-slate-100 rounded-2xl text-center">
               <p class="text-slate-400 italic">No rules defined. Click "Add Rule" to get started.</p>
@@ -105,7 +111,6 @@
                 [formGroupName]="$index"
                 class="grid grid-cols-[1fr_auto_1fr_1fr_auto] gap-3 items-end p-4 bg-slate-50 rounded-xl border border-slate-100"
               >
-                <!-- Metric -->
                 <div class="space-y-1">
                   <label class="text-xs font-medium text-slate-500">Metric</label>
                   <select formControlName="metric" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 outline-none bg-white">
@@ -115,7 +120,6 @@
                   </select>
                 </div>
 
-                <!-- Operator -->
                 <div class="space-y-1">
                   <label class="text-xs font-medium text-slate-500">Op</label>
                   <select formControlName="operator" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 outline-none bg-white font-mono">
@@ -125,7 +129,6 @@
                   </select>
                 </div>
 
-                <!-- Threshold -->
                 <div class="space-y-1">
                   <label class="text-xs font-medium text-slate-500">Threshold (%)</label>
                   <input
@@ -136,7 +139,6 @@
                   >
                 </div>
 
-                <!-- Adjustment -->
                 <div class="space-y-1">
                   <label class="text-xs font-medium text-slate-500">+Nodes</label>
                   <input
@@ -147,7 +149,6 @@
                   >
                 </div>
 
-                <!-- Remove -->
                 <button
                   type="button"
                   (click)="removeRule($index)"
@@ -175,11 +176,9 @@
       </form>
     </div>
 
-    <!-- Sidebar cost summary -->
     <div class="lg:col-span-1 space-y-6">
       <div class="bg-slate-900 rounded-2xl p-8 text-white shadow-xl sticky top-6">
         <h3 class="text-slate-400 font-medium mb-1">Estimated Monthly Cost</h3>
-        <!-- Signal actualizado en tiempo real con cada cambio del form -->
         <div class="text-4xl font-bold mb-6">${{ estimatedCost() }}</div>
 
         <div class="space-y-4 text-sm text-slate-400">
@@ -190,6 +189,10 @@
           <div class="flex justify-between">
             <span>Base Nodes</span>
             <span class="text-white">{{ policyForm.controls.baseNodes.value }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Max Nodes</span>
+            <span class="text-white">{{ policyForm.controls.maxNodes.value }}</span>
           </div>
           <div class="flex justify-between">
             <span>Scaling Rules</span>
