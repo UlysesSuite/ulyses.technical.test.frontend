@@ -1,0 +1,120 @@
+<div class="p-6 max-w-5xl mx-auto">
+  <header class="mb-8">
+    <h1 class="text-3xl font-bold text-slate-800">Create Auto-Scaling Policy</h1>
+    <p class="text-slate-500">Configure how your infrastructure scales based on load.</p>
+  </header>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2">
+      <form [formGroup]="policyForm" (ngSubmit)="onSubmit()" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 space-y-6">
+        
+        <!-- Base Config -->
+        <div class="space-y-4">
+          <h2 class="text-lg font-semibold text-slate-700 flex items-center gap-2">
+            <span class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-slate-500 text-sm">1</span>
+            Base Configuration
+          </h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="space-y-1">
+              <label class="text-sm font-medium text-slate-600">Policy Name</label>
+              <input 
+                type="text" 
+                formControlName="policyName"
+                class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-slate-800 focus:border-transparent outline-none transition-all"
+                placeholder="e.g. Production Web Tier"
+              >
+            </div>
+            
+            <div class="space-y-1">
+              <label class="text-sm font-medium text-slate-600">Instance Type</label>
+              <select 
+                formControlName="instanceType"
+                class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-slate-800 focus:border-transparent outline-none transition-all"
+              >
+                @for (type of instanceTypes; track type.id) {
+                  <option [value]="type.id">{{ type.name }} ({{ type.price }}€/mo )</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 pt-2">
+            <div class="space-y-1">
+              <label class="text-sm font-medium text-slate-600">Min Instances</label>
+              <input type="number" formControlName="minInstances" class="w-full px-4 py-2 rounded-xl border border-slate-200 outline-none">
+            </div>
+            <div class="space-y-1">
+              <label class="text-sm font-medium text-slate-600">Max Instances</label>
+              <input type="number" formControlName="maxInstances" class="w-full px-4 py-2 rounded-xl border border-slate-200 outline-none">
+            </div>
+          </div>
+        </div>
+
+        <hr class="border-slate-100">
+
+        <!-- Scaling Rules (The Challenge) -->
+        <div class="space-y-4">
+          <div class="flex justify-between items-center">
+            <h2 class="text-lg font-semibold text-slate-700 flex items-center gap-2">
+              <span class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-slate-500 text-sm">2</span>
+              Dynamic Scaling Rules
+            </h2>
+            <button type="button" class="text-sm font-semibold text-slate-400 cursor-not-allowed flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+              Add Rule
+            </button>
+          </div>
+          
+          <div class="p-8 border-2 border-dashed border-slate-100 rounded-2xl text-center space-y-2">
+            <p class="text-slate-400 italic">No rules defined yet.</p>
+            <!-- TODO: Implement dynamic rules (FormArray) and allow adding/removing rules. -->
+          </div>
+        </div>
+
+        <div class="pt-6">
+          <button 
+            type="submit" 
+            [disabled]="policyForm.invalid"
+            class="w-full bg-slate-800 text-white py-4 rounded-2xl font-bold hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-slate-200"
+          >
+            Create Scaling Policy
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Sidebar / Summary -->
+    <div class="lg:col-span-1 space-y-6">
+      <div class="bg-slate-900 rounded-2xl p-8 text-white shadow-xl sticky top-6">
+        <h3 class="text-slate-400 font-medium mb-1">Estimated Monthly Cost</h3>
+        <div class="text-4xl font-bold mb-6">${{ estimatedCost }}</div>
+        
+        <div class="space-y-4 text-sm text-slate-400">
+          <div class="flex justify-between">
+            <span>Base Cost</span>
+            <span class="text-white">$0</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Scaling Multiplier</span>
+            <span class="text-white">x1.0</span>
+          </div>
+          <div class="pt-4 border-t border-slate-800 text-xs italic">
+            * This estimate is currently static. 
+            <!-- TODO: Implement real-time calculation using Angular Signals. -->
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-amber-50 border border-amber-100 rounded-2xl p-6">
+        <div class="flex gap-3 text-amber-800">
+          <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <div>
+            <h4 class="font-bold mb-1">Architecture Note</h4>
+            <p class="text-sm opacity-90">The cost estimate and dynamic rules are intentionally left incomplete for the candidate to implement.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

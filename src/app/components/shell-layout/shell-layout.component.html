@@ -1,0 +1,46 @@
+<div class="flex h-screen bg-slate-50 font-sans text-slate-900 overflow-hidden">
+  <!-- Sidebar -->
+  <aside class="w-72 bg-white border-r border-slate-200 flex flex-col shadow-xl shadow-slate-200/50 z-30">
+    <div class="p-8 flex items-center gap-3">
+      <div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center shadow-lg shadow-slate-900/20">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+      </div>
+      <div>
+        <h2 class="text-xl font-black tracking-tight leading-none">UlysesSuite</h2>
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Infrastructure</span>
+      </div>
+    </div>
+
+    <nav class="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
+      @for (item of navItems; track item.path) {
+        <a 
+          [routerLink]="item.path" 
+          routerLinkActive="bg-slate-900 text-white shadow-lg shadow-slate-900/10"
+          [routerLinkActiveOptions]="{exact: true}"
+          class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-slate-500 hover:bg-slate-50 hover:text-slate-800 transition-all duration-200 group"
+        >
+          <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="item.icon"></path>
+          </svg>
+          {{ item.label }}
+        </a>
+      }
+    </nav>
+
+    <div class="p-6">
+      <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+        <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Technical Test Context</p>
+        <p class="text-xs text-slate-600 leading-relaxed">
+          Welcome to the UlysesSuite team. Our dashboard has performance issues. Your goal is to refactor and optimize.
+        </p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 overflow-y-auto relative bg-[#fcfcfd]">
+    <div class="max-w-7xl mx-auto min-h-full">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
