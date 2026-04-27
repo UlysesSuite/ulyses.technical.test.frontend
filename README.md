@@ -5,7 +5,7 @@
 This repository contains an Angular application with the following structure:
 
 - The domain simulates a **UlysesSuite Infrastructure Dashboard** with three main views: a Server Heatmap, an Auto-Scaling Policy builder, and a Server Metrics viewer.
-- The application uses **Angular 17+** with Standalone Components, **RxJS**, **Signals**, and **TailwindCSS**.
+- The application uses **Angular 20+** with Standalone Components, **RxJS**, **Signals**, and **TailwindCSS**.
 - It includes a data generation script (`seed.js`) that creates a massive dataset of **500 servers and 60 days** of historical data (approximately 30,000 heavy records).
 - It uses a **Node.js mock backend (`json-server`)** that serves this data.
 - The API is intentionally configured with a **2.5-second network delay** to simulate real-world latency.
@@ -52,7 +52,7 @@ The project uses a mock backend to simulate real-world API conditions.
 
 ### Additional Information
 
-- You must use **Angular 17+** features (Standalone components, new control flow).
+- You must use **Angular 20+** features (Standalone components, new control flow).
 - **Strict typing is mandatory** — do not use `any` types.
 - **Do not use any external state management libraries** (like NgRx, Akita, etc.) — all reactivity and caching must be implemented natively by you using RxJS and Signals.
 - If there’s something you’re not sure how to do, don’t worry — just give it your best effort.
