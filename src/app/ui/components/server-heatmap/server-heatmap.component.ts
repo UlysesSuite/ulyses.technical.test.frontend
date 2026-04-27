@@ -1,8 +1,19 @@
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { forkJoin, map } from 'rxjs';
 import { Metric } from '../../../data/domain/metric/models/metric.model';
+import { MetricsService } from '../../../data/domain/metric/services/metrics.service';
 import { Server } from '../../../data/domain/server/models/server.model';
+
+//mapas para data? opciones?
+type GridData = Record<string, Metric[]>;
 
 @Component({
   selector: 'app-server-heatmap',
@@ -11,41 +22,36 @@ import { Server } from '../../../data/domain/server/models/server.model';
   templateUrl: './server-heatmap.component.html',
   styleUrl: './server-heatmap.component.scss'
 })
-export class ServerHeatmapComponent implements OnInit {
-  private http = inject(HttpClient);
-  
-  servers: Server[] = [];
-  metrics: Metric[] = [];
-  gridData: { [serverId: string]: Metric[] } = {};
-  selectedCell: Metric | null = null;
+export class ServerHeatmapComponent {
+  //asegura el share replay , mira como interactua con el startsWith
+  private readonly metricsService = inject(MetricsService);
 
-  ngOnInit(): void {
-    this.http.get<Server[]>('http://localhost:3000/servers').subscribe(data => {
-      this.servers = data;
-      this.loadMetrics();
-    });
-  }
+  readonly selectedCell = signal<Metric | null>(null);
+  readonly loading = signal(true);
 
-  loadMetrics(): void {
-    this.http.get<Metric[]>('http://localhost:3000/metrics').subscribe(data => {
-      this.metrics = data;
-      this.mapMetricsToGrid();
-    });
-  }
-
-  mapMetricsToGrid(): void {
-    this.servers.forEach(server => {
-      this.gridData[server.id] = this.metrics
-        .filter(m => m.serverId === server.id)
-        .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
-    });
-  }
+  //no angular lifecicycle , A20+
+  private readonly data = toSignal(
+    forkJoin({
+      servers: this.metricsService.getServers(),
+      metrics: this.metricsService.getAllMetrics(),
+    }).pipe(
+      map(({ servers }) => {
+        this.loading.set(false);
+        return {
+          servers
+        };
+      })
+    ),
+    //SATISFIES                                                sure?
+    { initialValue: { servers: [] as Server[], gridData: {} as GridData } }
+  );
 
   onCellClick(metric: Metric): void {
-    this.selectedCell = metric;
+    this.selectedCell.set(metric);
   }
 
   closeModal(): void {
-    this.selectedCell = null;
+    this.selectedCell.set(null);
   }
+
 }
