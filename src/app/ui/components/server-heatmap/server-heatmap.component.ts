@@ -39,6 +39,7 @@ export class ServerHeatmapComponent {
     }).pipe(
       map(({ servers, metrics }) => {
         this.loading.set(false);
+        console.log(servers);
         return {
           servers,
           gridData: this.buildGrid(servers, metrics),
@@ -62,23 +63,32 @@ export class ServerHeatmapComponent {
   //Def TMC - legibilidad
   //quiza sea mejor alargarlo para ver que parte es la que tiene el cuello de botella
   //Tiempo buildGrid: 10.2939453125 ms Tiempo buildGrid: 10.671142578125 ms Tiempo buildGrid: 9.4140625 ms pero hay algo de delay en el template, pd: si , es el template
+  //vale , el db.json (creo) no agrupa por mes , agrupa de 30 en 30 dias , el (30) del template esta okey y seguria fluncando
   private buildGrid(servers: Server[], metrics: Metric[]): GridData {
     //es un acumulador , deberia de ser reduce
     console.time('Tiempo buildGrid');
     const grouped = metrics.reduce<Record<string, Metric[]>>((acc, metric) => {
+      //si coincide con el id
       (acc[metric.serverId] ??= []).push(metric);
       return acc;
     }, {});
-    let aux;
-    aux = servers.reduce<GridData>((acc, server) => {
+    console.log(
+      servers.reduce<GridData>((acc, server) => {
+        acc[server.id] = (grouped[server.id] ?? []).sort(
+          //el parseo puede ser cuello de botella ( nah , checked , esta en el template , el metodo termina con un tiempo acceptable)
+          (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+        );
+        return acc;
+      }, {})
+    );
+    return servers.reduce<GridData>((acc, server) => {
       acc[server.id] = (grouped[server.id] ?? []).sort(
-        //el parseo puede ser cuello de botella
+        //el parseo puede ser cuello de botella ( nah , checked , esta en el template , el metodo termina con un tiempo acceptable)
+        //marzo , pero 30 dias , son 31 no?, yup, fallo mio al hacer todo?
         (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
       );
       return acc;
     }, {});
-    console.timeEnd('Tiempo buildGrid');
-    return aux
   }
 
     //va un poco peor y es feo con ganas el metodo por que creo que hay menos delay en el template, me da la sensacion de que es mas fluido no se por que
