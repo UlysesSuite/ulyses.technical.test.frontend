@@ -2,8 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { Server } from '../../../models/server.model';
-import { Metric } from '../../../models/metric.model';
+import { Metric } from '../../../data/domain/metric/models/metric.model';
+import { Server } from '../../../data/domain/server/models/server.model';
 
 @Component({
   selector: 'app-server-metrics',
