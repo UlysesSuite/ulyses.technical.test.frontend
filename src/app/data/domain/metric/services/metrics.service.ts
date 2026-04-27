@@ -13,15 +13,11 @@ export class MetricsService {
   private readonly metricsCache = new Map<string, Observable<Metric[]>>();
   private allMetricsCache$: Observable<Metric[]> | null = null;
 
-
-  /*valida bien el shareReplay que no lo usas de hace la virgen
-  ¿startsWith posible por latencia / suspense?
-  */
   getServers(): Observable<Server[]> {
     if (!this.serversCache$) {
       this.serversCache$ = this.http
         .get<Server[]>(`${this.BASE_URL}/servers`)
-        .pipe(shareReplay(1));
+        .pipe(shareReplay(1)); 
     }
     return this.serversCache$;
   }
@@ -44,11 +40,10 @@ export class MetricsService {
     }
     return this.allMetricsCache$;
   }
- 
+
   clearCache(): void {
     this.serversCache$ = null;
     this.allMetricsCache$ = null;
     this.metricsCache.clear();
   }
-
 }
