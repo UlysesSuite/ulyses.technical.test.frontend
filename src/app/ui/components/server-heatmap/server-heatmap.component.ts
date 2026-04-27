@@ -1,8 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Server } from '../../models/server.model';
-import { Metric } from '../../models/metric.model';
+import { Server } from '../../../models/server.model';
+import { Metric } from '../../../models/metric.model';
 
 @Component({
   selector: 'app-server-heatmap',

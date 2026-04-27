@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { ShellLayoutComponent } from './components/shell-layout/shell-layout.component';
+import { ShellLayoutComponent } from './ui/components/shell-layout/shell-layout.component';
 
 export const routes: Routes = [
   {
@@ -9,15 +9,15 @@ export const routes: Routes = [
       { path: '', redirectTo: 'heatmap', pathMatch: 'full' },
       { 
         path: 'heatmap', 
-        loadComponent: () => import('./components/server-heatmap/server-heatmap.component').then(m => m.ServerHeatmapComponent) 
+        loadComponent: () => import('./ui/components/server-heatmap/server-heatmap.component').then(m => m.ServerHeatmapComponent) 
       },
       { 
         path: 'auto-scaling', 
-        loadComponent: () => import('./components/auto-scaling-form/auto-scaling-form.component').then(m => m.AutoScalingFormComponent) 
+        loadComponent: () => import('./ui/components/auto-scaling-form/auto-scaling-form.component').then(m => m.AutoScalingFormComponent) 
       },
       { 
         path: 'server-metrics', 
-        loadComponent: () => import('./components/server-metrics/server-metrics.component').then(m => m.ServerMetricsComponent) 
+        loadComponent: () => import('./ui/components/server-metrics/server-metrics.component').then(m => m.ServerMetricsComponent) 
       }
     ]
   }
