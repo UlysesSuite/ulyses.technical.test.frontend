@@ -4,7 +4,6 @@
     <p class="text-slate-500">Monitoring 100 servers over the last 30 days.</p>
   </header>
 
-  <!-- TODO: Refactor this grid to handle 3000+ nodes efficiently without freezing the browser. -->
   <div class="overflow-auto border border-slate-200 rounded-lg bg-white shadow-sm" style="max-height: 70vh;">
     <div class="inline-block min-w-full align-middle">
       <table class="min-w-full divide-y divide-slate-200 border-collapse">
@@ -17,7 +16,6 @@
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-slate-200">
-          <!-- Intentional Flaw: Rendering 100x30 cells without virtual scrolling or trackBy -->
           @for (server of servers; track server.id) {
             <tr>
               <td class="px-3 py-2 whitespace-nowrap text-xs font-semibold text-slate-700 sticky left-0 bg-white border-r border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
