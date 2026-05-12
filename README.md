@@ -6,7 +6,7 @@ This repository contains an Angular application with the following structure:
 
 - The domain simulates a **UlysesSuite Infrastructure Dashboard** with three main views: a Server Heatmap, an Auto-Scaling Policy builder, and a Server Metrics viewer.
 - The application uses **Angular 20+** with Standalone Components, **RxJS**, **Signals**, and **TailwindCSS**.
-- It includes a data generation script (`seed.js`) that creates a massive dataset of **500 servers and 60 days** of historical data (approximately 30,000 heavy records).
+- It includes a data generation script (`seed.js`) that creates a massive dataset of **500 servers and 30 days** of historical data (approximately 15,000 heavy records).
 - It uses a **Node.js mock backend (`json-server`)** that serves this data.
 - The API is intentionally configured with a **2.5-second network delay** to simulate real-world latency.
 
@@ -17,7 +17,7 @@ This repository contains an Angular application with the following structure:
 The project uses a mock backend to simulate real-world API conditions.
 
 1.  **Install dependencies**: `npm install`
-2.  **Generate heavy dataset**: `npm run seed` (This generates ~30,000 high-payload records in `db.json`)
+2.  **Generate heavy dataset**: `npm run seed` (This generates ~15,000 high-payload records in `db.json`)
 3.  **Start Mock API**: `npm run api` (Runs on port 3000 with a mandatory 2.5s network delay)
 4.  **Start Angular App**: `npm start`
 

@@ -44,4 +44,4 @@ const generateData = () => {
 
 const data = generateData();
 fs.writeFileSync('db.json', JSON.stringify(data, null, 2));
-console.log('Generated db.json with 300 servers and 3000 metrics.');
+console.log('Generated db.json with 500 servers and 15000 metrics.');
